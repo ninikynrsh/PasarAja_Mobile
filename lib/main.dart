@@ -5,8 +5,9 @@ import 'package:get/get.dart';
 import 'package:pasaraja_mobile/config/routes/routes.dart';
 import 'package:pasaraja_mobile/config/themes/colors.dart';
 import 'package:pasaraja_mobile/firebase_options.dart';
-import 'package:pasaraja_mobile/feature/auth/presentation/pages/welcome_page.dart';
-import 'package:pasaraja_mobile/google_sign_in.dart';
+import 'package:pasaraja_mobile/module/auth/providers/providers.dart';
+import 'package:pasaraja_mobile/module/auth/views/welcome_page.dart';
+import 'package:pasaraja_mobile/core/services/google_signin_services.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
@@ -30,8 +31,20 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => GoogleSignProvider(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => GoogleSignService()),
+        ChangeNotifierProvider(create: (context) => ChangePasswordProvider()),
+        ChangeNotifierProvider(create: (context) => ChangePinProvider()),
+        ChangeNotifierProvider(create: (context) => SignInGoogleProvider()),
+        ChangeNotifierProvider(create: (context) => SignInPhoneProvider()),
+        ChangeNotifierProvider(create: (context) => SignUpFirstProvider()),
+        ChangeNotifierProvider(create: (context) => SignUpSecondProvider()),
+        ChangeNotifierProvider(create: (context) => SignUpThirdProvider()),
+        ChangeNotifierProvider(create: (context) => SignUpFourthProvider()),
+        ChangeNotifierProvider(create: (context) => VerifyOtpProvider()),
+        ChangeNotifierProvider(create: (context) => VerifyPinProvider()),
+      ],
       child: GetMaterialApp(
         title: 'PasarAja',
         theme: ThemeData(

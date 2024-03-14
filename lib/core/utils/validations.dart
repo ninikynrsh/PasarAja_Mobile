@@ -238,6 +238,54 @@ class PasarAjaValidation {
       message: 'Data valid',
     );
   }
+
+  static ValidationModel konfirmasiPassword(
+      String? password, String? konfirmasi) {
+    if (password == null) {
+      return const ValidationModel(message: 'Password null.');
+    }
+    if (konfirmasi == null) {
+      return const ValidationModel(message: 'Konfirmasi null.');
+    }
+
+    if (password != konfirmasi) {
+      // Password valid
+      return const ValidationModel(
+        message: 'Konfirmasi password tidak cocok',
+      );
+    }
+
+    // Password valid
+    return const ValidationModel(
+      status: true,
+      message: 'Data valid',
+    );
+  }
+
+  static ValidationModel konfirmasiPin(
+    String? pin,
+    String? konfirmasi,
+  ) {
+    if (pin == null) {
+      return const ValidationModel(message: 'PIN null.');
+    }
+    if (konfirmasi == null) {
+      return const ValidationModel(message: 'Konfirmasi null.');
+    }
+
+    if (pin != konfirmasi) {
+      // Password valid
+      return const ValidationModel(
+        message: 'Konfirmasi PIN tidak cocok',
+      );
+    }
+
+    // Password valid
+    return const ValidationModel(
+      status: true,
+      message: 'Data valid',
+    );
+  }
 }
 
 class ValidationModel extends Equatable {

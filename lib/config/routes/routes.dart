@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:pasaraja_mobile/config/routes/route_names.dart';
-import 'package:pasaraja_mobile/feature/auth/presentation/pages/change_password_page.dart';
-import 'package:pasaraja_mobile/feature/auth/presentation/pages/change_pin_page.dart';
-import 'package:pasaraja_mobile/feature/auth/presentation/pages/signin_google_page.dart';
-import 'package:pasaraja_mobile/feature/auth/presentation/pages/signin_phone_page.dart';
-import 'package:pasaraja_mobile/feature/auth/presentation/pages/signup_first_page.dart';
-import 'package:pasaraja_mobile/feature/auth/presentation/pages/signup_fourth_page.dart';
-import 'package:pasaraja_mobile/feature/auth/presentation/pages/signup_second_page.dart';
-import 'package:pasaraja_mobile/feature/auth/presentation/pages/signup_third_page.dart';
-import 'package:pasaraja_mobile/feature/auth/presentation/pages/test_page.dart';
-import 'package:pasaraja_mobile/feature/auth/presentation/pages/verify_otp_page.dart';
-import 'package:pasaraja_mobile/feature/auth/presentation/pages/verify_pin_page.dart';
-import 'package:pasaraja_mobile/feature/auth/presentation/pages/welcome_page.dart';
+import 'package:pasaraja_mobile/module/auth/models/user_model.dart';
+import 'package:pasaraja_mobile/module/auth/models/verification_model.dart';
+import 'package:pasaraja_mobile/module/auth/views/change/change_password_page.dart';
+import 'package:pasaraja_mobile/module/auth/views/change/change_pin_page.dart';
+import 'package:pasaraja_mobile/module/auth/views/signin/signin_google_page.dart';
+import 'package:pasaraja_mobile/module/auth/views/signin/signin_phone_page.dart';
+import 'package:pasaraja_mobile/module/auth/views/signup/signup_first_page.dart';
+import 'package:pasaraja_mobile/module/auth/views/signup/signup_fourth_page.dart';
+import 'package:pasaraja_mobile/module/auth/views/signup/signup_second_page.dart';
+import 'package:pasaraja_mobile/module/auth/views/signup/signup_third_page.dart';
+import 'package:pasaraja_mobile/module/auth/views/test_page.dart';
+import 'package:pasaraja_mobile/module/auth/views/verify/verify_otp_page.dart';
+import 'package:pasaraja_mobile/module/auth/views/verify/verify_pin_page.dart';
+import 'package:pasaraja_mobile/module/auth/views/welcome_page.dart';
 
 class AppRoutes {
   static Route onGenerateRoute(RouteSettings settings) {
@@ -23,13 +25,20 @@ class AppRoutes {
       case RouteName.loginGoogle:
         return _materialRoute(const SignInGooglePage());
       case RouteName.changePin:
-        return _materialRoute(const ChangePinPage());
+        return _materialRoute(const ChangePinPage(
+          phone: 'null',
+        ));
       case RouteName.changePw:
-        return _materialRoute(const ChangePasswordPage());
+        return _materialRoute(const ChangePasswordPage(
+          email: '',
+        ));
       case RouteName.verifyPin:
-        return _materialRoute(const VerifyPinPage());
+        return _materialRoute(const VerifyPinPage(
+          phone: '',
+        ));
       case RouteName.verifyCode:
         return _materialRoute(VerifyOtpPage(
+          verificationModel: const VerificationModel(),
           from: settings.arguments as int,
           recipient: settings.arguments as String,
         ));
@@ -40,9 +49,14 @@ class AppRoutes {
           phone: settings.arguments as String,
         ));
       case RouteName.signupThird:
-        return _materialRoute(const SingUpCreatePin());
+        return _materialRoute(const SingUpCreatePin(
+          user: UserModel(),
+        ));
       case RouteName.signupFourth:
-        return _materialRoute(const SignUpConfirmPage());
+        return _materialRoute(const SignUpConfirmPage(
+          user: UserModel(),
+          createdPin: '',
+        ));
       case RouteName.testpage:
         return _materialRoute(const MyTestPage());
       default:
