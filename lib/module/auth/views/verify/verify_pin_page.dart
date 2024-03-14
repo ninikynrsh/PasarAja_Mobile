@@ -132,7 +132,7 @@ class _VerifyPinPageState extends State<VerifyPinPage> {
     return Consumer<VerifyPinProvider>(
       builder: (context, provider, child) {
         return TextButton(
-          onPressed: () {
+          onPressed: () async {
             provider.onPressedButtonLupaPin(
               phone: widget.phone,
             );

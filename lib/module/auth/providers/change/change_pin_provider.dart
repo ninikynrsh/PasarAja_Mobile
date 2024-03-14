@@ -3,6 +3,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:pasaraja_mobile/core/constants/constants.dart';
 import 'package:pasaraja_mobile/core/sources/data_state.dart';
+import 'package:pasaraja_mobile/core/utils/messages.dart';
 import 'package:pasaraja_mobile/core/utils/utils.dart';
 import 'package:pasaraja_mobile/core/utils/validations.dart';
 import 'package:pasaraja_mobile/module/auth/controllers/change_controller.dart';
@@ -52,60 +53,80 @@ class ChangePinProvider extends ChangeNotifier {
   /// Untuk mengecek apakah pin yang diinputkan valid atau tidak
   ///
   void onValidatePin(String pin, String konf) {
+    // mengecek apakah pin valid atau tidak
     vPin = PasarAjaValidation.pin(pin);
 
-    // enable and disable button
+    // jika pin valid
     if (vPin.status == true) {
-      message = '';
+      _message = '';
       onValidateKonf(pin, konf);
     } else {
-      message = vPin.message ?? PasarAjaConstant.unknownError;
+      _message = vPin.message ?? PasarAjaConstant.unknownError;
     }
+
+    // update status button
     _updateButonState();
   }
 
-  /// Untuk mengecek apakah konfirmasi password cocok atau tidak
+  /// Untuk mengecek apakah konfirmasi pin cocok atau tidak
   ///
   void onValidateKonf(String pin, String konf) {
+    // mengecek apakah konfirmasi pin valid atau tidak
     vKonf = PasarAjaValidation.konfirmasiPin(pin, konf);
 
+    // jika konfirmasi pin cocok
     if (vKonf.status == true) {
-      message = '';
+      _message = '';
     } else {
-      message = vKonf.message ?? PasarAjaConstant.unknownError;
+      _message = vKonf.message ?? PasarAjaConstant.unknownError;
     }
+
+    // update status button
     _updateButonState();
   }
 
+  /// Enable & disable button, sesuai dengan valid atau tidaknya data
+  ///
   void _updateButonState() {
     if (vPin.status == null || vKonf.status == null) {
-      buttonState = AuthFilledButton.stateDisabledButton;
+      _buttonState = AuthFilledButton.stateDisabledButton;
     }
     if (vPin.status == false || vKonf.status == false) {
-      buttonState = AuthFilledButton.stateDisabledButton;
+      _buttonState = AuthFilledButton.stateDisabledButton;
     } else {
-      buttonState = AuthFilledButton.stateEnabledButton;
+      _buttonState = AuthFilledButton.stateEnabledButton;
     }
     notifyListeners();
   }
 
+  /// Aksi saat button 'Ganti Pin' ditekan
   Future<void> onPressedButtonGantiPin({
     required String phone,
     required String pin,
   }) async {
     try {
-      _buttonState = AuthFilledButton.stateLoadingButton;
-      notifyListeners();
+      // show loading button
+      buttonState = AuthFilledButton.stateLoadingButton;
 
       await PasarAjaConstant.buttonDelay;
 
+      // memanggil controller untuk menganti pin dari user
       final dataState = await _changeController.changePin(
         phone: phone,
         pin: pin,
       );
 
+      // jika pin berhasil diubah
       if (dataState is DataSuccess) {
-        Fluttertoast.showToast(msg: "PIN berhasil diubah, Silahkan Login Lagi");
+        // close loading button
+        buttonState = AuthFilledButton.stateEnabledButton;
+
+        // menampilkan dialog informasi bahwa pin berhasil diubah
+        await PasarAjaMessage.showInformation(
+          "PIN berhasil diubah, Silahkan Login lagi dengan PIN yang baru.",
+        );
+
+        // kembali ke halaman welcome
         Get.offAll(
           const WelcomePage(),
           transition: Transition.circularReveal,
@@ -113,19 +134,21 @@ class ChangePinProvider extends ChangeNotifier {
         );
       }
 
+      // jika pin gagal diubah
       if (dataState is DataFailed) {
         PasarAjaUtils.triggerVibration();
         _message = dataState.error!.error.toString();
-        PasarAjaUtils.showWarning(_message.toString());
+        notifyListeners();
+        PasarAjaUtils.showWarning(message.toString());
       }
 
-      _buttonState = AuthFilledButton.stateEnabledButton;
-      notifyListeners();
+      // close loading button
+      buttonState = AuthFilledButton.stateEnabledButton;
     } catch (ex) {
       _buttonState = AuthFilledButton.stateEnabledButton;
-      message = ex.toString();
-      Fluttertoast.showToast(msg: message.toString());
+      _message = ex.toString();
       notifyListeners();
+      Fluttertoast.showToast(msg: message.toString());
     }
   }
 
@@ -133,12 +156,12 @@ class ChangePinProvider extends ChangeNotifier {
   void resetData() {
     pinCont.text = '';
     konfCont.text = '';
-    buttonState = AuthFilledButton.stateDisabledButton;
-    message = '';
+    _buttonState = AuthFilledButton.stateDisabledButton;
+    _message = '';
     vPin = PasarAjaValidation.pin(null);
     vKonf = PasarAjaValidation.konfirmasiPin(null, null);
-    obscurePass = true;
-    obscureKonf = true;
+    _obscurePass = true;
+    _obscureKonf = true;
     notifyListeners();
   }
 }

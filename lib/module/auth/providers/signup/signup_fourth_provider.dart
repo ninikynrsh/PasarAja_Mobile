@@ -4,6 +4,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:pasaraja_mobile/core/constants/constants.dart';
 import 'package:pasaraja_mobile/core/sources/data_state.dart';
+import 'package:pasaraja_mobile/core/utils/messages.dart';
 import 'package:pasaraja_mobile/core/utils/utils.dart';
 import 'package:pasaraja_mobile/core/utils/validations.dart';
 import 'package:pasaraja_mobile/module/auth/controllers/signup_controller.dart';
@@ -38,12 +39,14 @@ class SignUpFourthProvider extends ChangeNotifier {
   void onValidatePin(String createdPin, String konfPin) {
     DMethod.log('Password Prov: $createdPin');
     DMethod.log('Konfirmasi Prov : $konfPin');
+
+    // jika pin dan konfirmasi pin cocok
     if (createdPin == konfPin) {
       _message = '';
-      buttonState = AuthFilledButton.stateEnabledButton;
+      _buttonState = AuthFilledButton.stateEnabledButton;
     } else {
       message = 'PIN tidak cocok';
-      buttonState = AuthFilledButton.stateDisabledButton;
+      _buttonState = AuthFilledButton.stateDisabledButton;
     }
 
     notifyListeners();
@@ -56,11 +59,12 @@ class SignUpFourthProvider extends ChangeNotifier {
     required String createdPin,
   }) async {
     try {
-      // call loading
+      // show button loading
       buttonState = AuthFilledButton.stateLoadingButton;
-      notifyListeners();
 
-      // memanggil api untuk login
+      await PasarAjaConstant.buttonDelay;
+
+      // memanggil api untuk melakukan registrasi
       final dataState = await _signUpController.signUp(
         phone: user.phoneNumber!,
         email: user.email!,
@@ -69,31 +73,34 @@ class SignUpFourthProvider extends ChangeNotifier {
         password: user.password!,
       );
 
+      // jika register berhasil
       if (dataState is DataSuccess) {
-        Fluttertoast.showToast(
-          msg: "Register berhasil, Silahkan login dengan akun yang baru",
+        // close button loading
+        buttonState = AuthFilledButton.stateEnabledButton;
+
+        // menapilkan dialog informasi register berhasil
+        await PasarAjaMessage.showInformation(
+          'Register berhasil, Silahkan login dengan akun yang baru',
         );
 
-        await Future.delayed(const Duration(seconds: 2));
-
+        // ke halaman welcome
         Get.offAll(
           const WelcomePage(),
           transition: Transition.leftToRight,
         );
       }
 
+      // jika reister gagal
       if (dataState is DataFailed) {
         PasarAjaUtils.triggerVibration();
-        message = dataState.error!.error ?? PasarAjaConstant.unknownError;
+        _message = dataState.error!.error ?? PasarAjaConstant.unknownError;
+        _buttonState = AuthFilledButton.stateEnabledButton;
+        notifyListeners();
         Fluttertoast.showToast(msg: message.toString());
       }
-
-      // update button state
-      buttonState = AuthFilledButton.stateEnabledButton;
-      notifyListeners();
     } catch (ex) {
-      buttonState = AuthFilledButton.stateEnabledButton;
-      message = ex.toString();
+      _buttonState = AuthFilledButton.stateEnabledButton;
+      _message = ex.toString();
       Fluttertoast.showToast(msg: message.toString());
       notifyListeners();
     }
@@ -102,8 +109,8 @@ class SignUpFourthProvider extends ChangeNotifier {
   /// reset semua data pada provider
   void resetData() {
     pinCont.text = '';
-    buttonState = AuthFilledButton.stateDisabledButton;
-    message = '';
+    _buttonState = AuthFilledButton.stateDisabledButton;
+    _message = '';
     vPin = PasarAjaValidation.phone(null);
     notifyListeners();
   }

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class ConfirmDialog extends StatelessWidget {
+class InformationDialog extends StatelessWidget {
   final String title;
   final String message;
 
-  const ConfirmDialog({
+  const InformationDialog({
     Key? key,
     required this.title,
     required this.message,
@@ -17,12 +17,6 @@ class ConfirmDialog extends StatelessWidget {
       title: Text(title),
       content: Text(message),
       actions: <Widget>[
-        TextButton(
-          onPressed: () {
-            Get.back(result: false);
-          },
-          child: const Text('Tidak'),
-        ),
         TextButton(
           onPressed: () {
             Get.back(result: true);
