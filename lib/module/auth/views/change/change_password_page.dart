@@ -85,6 +85,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
     );
   }
 
+//input password
   _buildInputPassword() {
     return Consumer<ChangePasswordProvider>(
       builder: (context, provider, child) {
@@ -116,6 +117,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
     );
   }
 
+//konfirmasi password
   _buildInputKonfirmasi() {
     return Consumer<ChangePasswordProvider>(
       builder: (context, provider, child) {
