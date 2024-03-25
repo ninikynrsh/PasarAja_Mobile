@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
@@ -66,10 +67,22 @@ class VerifyPinProvider extends ChangeNotifier {
       // show loading button
       buttonState = AuthFilledButton.stateLoadingButton;
 
+      // get device info
+      String? deviceToken = await FirebaseMessaging.instance.getToken();
+      String deviceName = await PasarAjaUtils.getDeviceModel();
+
+      // save device token
+      PasarAjaUserService.setUserData(
+        PasarAjaUserService.deviceToken,
+        deviceToken,
+      );
+
       // memanggil controller untuk melakukan login dengan nomor hp
       final dataState = await _signInController.signInPhone(
         phone: phone,
         pin: pin,
+        deviceName: deviceName,
+        deviceToken: deviceToken ?? '',
       );
 
       // jika login berhasil
@@ -98,6 +111,8 @@ class VerifyPinProvider extends ChangeNotifier {
           // membuka halaman utama
           Get.to(
             const CustomerMainPage(),
+            transition: Transition.circularReveal,
+            duration: PasarAjaConstant.transitionDuration,
           );
         } else {
           Get.snackbar("ERROR", "Your account level is unknown");
@@ -130,18 +145,21 @@ class VerifyPinProvider extends ChangeNotifier {
       // menampilkan dialog konfirmasi untuk mengirimkan kode otp
       final confirm = await PasarAjaMessage.showConfirmation(
         "Kami akan mengirimkan kode OTP ke alamat email Anda.",
+        actionYes: 'Kirim',
+        actionCancel: 'Batal',
       );
 
       // jika user menekan tombol yes
       if (confirm) {
         // memanggil loading ui
-        PasarAjaUtils.showLoadingDialog();
+        PasarAjaMessage.showLoading();
 
         await PasarAjaConstant.buttonDelay;
 
         // memanggil controller untuk mengirimkan kode otp
         final dataState = await _verifyController.requestOtpByPhone(
           phone: phone,
+          type: VerificationController.forgotVerify,
         );
 
         // menutup loading ui

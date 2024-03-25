@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
@@ -111,10 +112,22 @@ class SignInGoogleProvider extends ChangeNotifier {
 
       await PasarAjaConstant.buttonDelay;
 
+      // get device info
+      String? deviceToken = await FirebaseMessaging.instance.getToken();
+      String deviceName = await PasarAjaUtils.getDeviceModel();
+
+      // save device token
+      PasarAjaUserService.setUserData(
+        PasarAjaUserService.deviceToken,
+        deviceToken,
+      );
+
       // memanggil controller untuk melakukan login dengan email dan password
       final dataState = await _signInController.signInEmail(
         email: email,
         password: password,
+        deviceName: deviceName,
+        deviceToken: deviceToken ?? '',
       );
 
       // jika login berhasil
@@ -154,7 +167,7 @@ class SignInGoogleProvider extends ChangeNotifier {
         PasarAjaUtils.triggerVibration();
         message = dataState.error!.error ?? PasarAjaConstant.unknownError;
         // Fluttertoast.showToast(msg: message.toString());
-        PasarAjaUtils.showWarning(message.toString());
+        PasarAjaMessage.showSnackbarWarning(message.toString());
       }
 
       // close loading button
@@ -173,7 +186,7 @@ class SignInGoogleProvider extends ChangeNotifier {
       // cek apakah email valid atau tidak
       if (PasarAjaValidation.email(email).status == true) {
         // show loading ui
-        PasarAjaUtils.showLoadingDialog();
+        PasarAjaMessage.showLoading();
 
         await PasarAjaConstant.buttonDelay;
 
@@ -190,16 +203,19 @@ class SignInGoogleProvider extends ChangeNotifier {
           // menampilkan dialog konfirmasi pengiriman otp
           final confirm = await PasarAjaMessage.showConfirmation(
             "Kami akan mengirimkan kode OTP ke alamat email Anda.",
+            actionYes: 'Kirim',
+            actionCancel: 'Batal',
           );
 
           // jika user menekan tombol yes
           if (confirm) {
             // menampilkan loding ui
-            PasarAjaUtils.showLoadingDialog();
+            PasarAjaMessage.showLoading();
 
             // memanggil controller untuk mengirimkan kode otp ke email user
             dataState = await _verifyController.requestOtp(
               email: emailCont.text,
+              type: VerificationController.forgotVerify,
             );
 
             // menutup loading ui
@@ -237,12 +253,7 @@ class SignInGoogleProvider extends ChangeNotifier {
         }
       } else {
         // jika email tidak valid
-        Get.snackbar(
-          'Info',
-          'Email tidak valid',
-          snackPosition: SnackPosition.BOTTOM,
-          duration: const Duration(seconds: 3),
-        );
+        Fluttertoast.showToast(msg: vEmail.message ?? 'Email tidak valid');
       }
     } catch (ex) {
       message = ex.toString();
@@ -255,13 +266,25 @@ class SignInGoogleProvider extends ChangeNotifier {
     required String email,
   }) async {
     // menampilkan loading ui
-    PasarAjaUtils.showLoadingDialog();
+    PasarAjaMessage.showLoading();
 
     await Future.delayed(const Duration(seconds: 3));
+
+    // get device info
+    String? deviceToken = await FirebaseMessaging.instance.getToken();
+    String deviceName = await PasarAjaUtils.getDeviceModel();
+
+    // save device token
+    PasarAjaUserService.setUserData(
+      PasarAjaUserService.deviceToken,
+      deviceToken,
+    );
 
     // memanggil controller untuk melakukan login google dengan email yang diinputkan
     DataState dataState = await _signInController.signInGoogle(
       email: email,
+      deviceName: deviceName,
+      deviceToken: deviceToken ?? '',
     );
 
     // menutup loading ui
@@ -302,7 +325,7 @@ class SignInGoogleProvider extends ChangeNotifier {
       PasarAjaUtils.triggerVibration();
       message = dataState.error!.error ?? PasarAjaConstant.unknownError;
       // Fluttertoast.showToast(msg: message.toString());
-      PasarAjaUtils.showWarning(message.toString());
+      PasarAjaMessage.showSnackbarWarning(message.toString());
     }
     notifyListeners();
   }
