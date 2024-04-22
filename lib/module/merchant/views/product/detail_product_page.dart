@@ -55,7 +55,7 @@ class _DetailProductPageState extends State<DetailProductPage> {
     });
     super.initState();
   }
-
+//gambar
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -83,7 +83,7 @@ class _DetailProductPageState extends State<DetailProductPage> {
               onFailureState: value.state as OnFailureState,
             );
           }
-
+//size
           if (value.state is OnSuccessState) {
             final product = value.detailProd;
             return CustomScrollView(
@@ -128,6 +128,7 @@ class _DetailProductPageState extends State<DetailProductPage> {
                     },
                   ),
                 ),
+//code produk dll            
                 SliverToBoxAdapter(
                   child: Padding(
                     padding: const EdgeInsets.only(left: 15, right: 15),
@@ -377,17 +378,17 @@ class _DetailProductPageState extends State<DetailProductPage> {
               ),
             ),
             Text(
-              "Ketersediaan Stok : ${value.isAvailable}",
+              "Stok Tersedia : ${value.isAvailable ? 'Ya' : 'Tidak'}",
               style: PasarAjaTypography.sfpdMedium,
             ),
             const SizedBox(height: 3),
             Text(
-              "Direkomendasikan : ${value.isRecommended}",
+              "Direkomendasikan : ${value.isRecommended ? 'Ya' : 'Tidak'}",
               style: PasarAjaTypography.sfpdMedium,
             ),
             const SizedBox(height: 3),
             Text(
-              "Ditampilkan : ${value.isShown}",
+              "Ditampilkan : ${value.isShown ? 'Ya' : 'Tidak'}",
               textAlign: TextAlign.justify,
               style: PasarAjaTypography.sfpdMedium,
             ),
@@ -492,7 +493,7 @@ class _DetailProductPageState extends State<DetailProductPage> {
       ],
     );
   }
-
+//riwayat transaksi
   Widget _historyTrx(List<ProductHistoriesModel>? histories) {
     // limit list history
     List<ProductHistoriesModel>? limitedHistories =
