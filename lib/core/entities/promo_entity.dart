@@ -2,39 +2,54 @@ import 'package:equatable/equatable.dart';
 
 class PromoEntity extends Equatable {
   final int? idPromo;
+  final int? idCpProd;
   final int? idShop;
   final int? idProduct;
-  final int? defaultPrice;
+  final String? productName;
+  final String? categoryProd;
+  final int? price;
   final int? promoPrice;
-  final DateTime? promoStart;
-  final DateTime? promoEnd;
+  final num? percentage;
+  final DateTime? startDate;
+  final DateTime? endDate;
   final DateTime? createdAt;
   final DateTime? updatedAt;
+  final String? photo;
 
   const PromoEntity({
     this.idPromo,
+    this.idCpProd,
     this.idShop,
     this.idProduct,
-    this.defaultPrice,
+    this.productName,
+    this.categoryProd,
+    this.price,
     this.promoPrice,
-    this.promoStart,
-    this.promoEnd,
+    this.percentage,
+    this.startDate,
+    this.endDate,
     this.createdAt,
     this.updatedAt,
+    this.photo,
   });
 
   @override
   List<Object?> get props {
     return [
       idPromo,
+      idCpProd,
       idShop,
       idProduct,
-      defaultPrice,
+      productName,
+      categoryProd,
+      price,
       promoPrice,
-      promoStart,
-      promoPrice,
+      percentage,
+      startDate,
+      endDate,
       createdAt,
       updatedAt,
+      photo,
     ];
   }
 }

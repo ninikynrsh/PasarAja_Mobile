@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:pasaraja_mobile/core/services/user_services.dart';
 import 'package:pasaraja_mobile/core/sources/data_state.dart';
 import 'package:pasaraja_mobile/core/sources/provider_state.dart';
+import 'package:pasaraja_mobile/core/utils/messages.dart';
 import 'package:pasaraja_mobile/module/merchant/controllers/product_controller.dart';
 import 'package:pasaraja_mobile/module/merchant/models/product_model.dart';
 
@@ -16,19 +19,31 @@ class UnavailableProvider extends ChangeNotifier {
   List<ProductModel> _unavailables = [];
   List<ProductModel> get unavailables => _unavailables;
 
+  // stok status
+  bool _isAvailable = false;
+  bool get isAvailable => _isAvailable;
+  set isAvailable(bool value) {
+    _isAvailable = value;
+    notifyListeners();
+  }
+
   Future<void> fetchData() async {
     try {
       // set loading
       state = const OnLoadingState();
       notifyListeners();
 
+      // get id shop from preferences
+      final int idShop = await PasarAjaUserService.getShopId();
+
       // call controller
       final dataState = await _prodController.unavailablePage(
-        idShop: 1,
+        idShop: idShop,
       );
 
       // response is successful
       if (dataState is DataSuccess) {
+        _isAvailable = false;
         _unavailables = dataState.data as List<ProductModel>;
         state = const OnSuccessState();
       }
@@ -42,6 +57,34 @@ class UnavailableProvider extends ChangeNotifier {
     } catch (ex) {
       state = OnFailureState(message: ex.toString());
       notifyListeners();
+    }
+  }
+
+  Future<void> updateAvailable({required int idProduct}) async {
+    try {
+      Get.back();
+      // show loading
+      PasarAjaMessage.showLoading();
+
+      final dataState = await _prodController.updateSettingStok(
+        idShop: 1,
+        idProduct: idProduct,
+        stokStatus: isAvailable,
+      );
+
+      Get.back();
+
+      if (dataState is DataSuccess) {
+        await PasarAjaMessage.showInformation("Stok berhasil diupdate");
+      }
+
+      if (dataState is DataFailed) {
+        await PasarAjaMessage.showInformation(
+          "Stok gagal diupdate!\n\nError : ${dataState.error?.error}",
+        );
+      }
+    } catch (ex) {
+      // nothing
     }
   }
 }

@@ -4,15 +4,10 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:pasaraja_mobile/config/themes/colors.dart';
 import 'package:pasaraja_mobile/firebase_options.dart';
-import 'package:pasaraja_mobile/module/auth/providers/providers.dart';
 import 'package:pasaraja_mobile/core/services/google_signin_services.dart';
-import 'package:pasaraja_mobile/module/merchant/providers/product/best_selling_provider.dart';
-import 'package:pasaraja_mobile/module/merchant/providers/product/complain_provider.dart';
-import 'package:pasaraja_mobile/module/merchant/providers/product/hidden_provider.dart';
-import 'package:pasaraja_mobile/module/merchant/providers/product/product_provider.dart';
-import 'package:pasaraja_mobile/module/merchant/providers/product/recommended_provider.dart';
-import 'package:pasaraja_mobile/module/merchant/providers/product/review_provider.dart';
-import 'package:pasaraja_mobile/module/merchant/providers/product/unavailable_provider.dart';
+import 'package:pasaraja_mobile/module/auth/providers/providers.dart';
+import 'package:pasaraja_mobile/module/customer/provider/providers.dart';
+import 'package:pasaraja_mobile/module/merchant/providers/providers.dart';
 import 'package:pasaraja_mobile/splash_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -41,6 +36,7 @@ class MyApp extends StatelessWidget {
       providers: [
         // auth
         ChangeNotifierProvider(create: (context) => GoogleSignService()),
+        ChangeNotifierProvider(create: (context) => WelcomeProvider()),
         ChangeNotifierProvider(create: (context) => ChangePasswordProvider()),
         ChangeNotifierProvider(create: (context) => ChangePinProvider()),
         ChangeNotifierProvider(create: (context) => SignInGoogleProvider()),
@@ -51,17 +47,52 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => SignUpFourthProvider()),
         ChangeNotifierProvider(create: (context) => VerifyOtpProvider()),
         ChangeNotifierProvider(create: (context) => VerifyPinProvider()),
+        // customer
+        ChangeNotifierProvider(create: (context) => HomeProvider()),
+        ChangeNotifierProvider(create: (context) => ProfileCustomerProvider()),
+        ChangeNotifierProvider(create: (context) => EditAccountCustomerProvider()),
+        ChangeNotifierProvider(create: (context) => UpdatePhotoProfileCustomerProvider()),
         // merchant
+        ChangeNotifierProvider(create: (context) => MyShopProvider()),
+        ChangeNotifierProvider(create: (context) => ProfileProvider()),
+        ChangeNotifierProvider(create: (context) => UpdatePhotoProfileProvider()),
+        ChangeNotifierProvider(create: (context) => EditAccountProvider()),
         ChangeNotifierProvider(create: (context) => ProductProvider()),
+        ChangeNotifierProvider(create: (context) => AddProductProvider()),
+        ChangeNotifierProvider(create: (context) => EditProductProvider()),
+        ChangeNotifierProvider(create: (context) => CropPhotoProvider()),
         ChangeNotifierProvider(create: (context) => BestSellingProvider()),
         ChangeNotifierProvider(create: (context) => ReviewProvider()),
         ChangeNotifierProvider(create: (context) => ComplainProvider()),
         ChangeNotifierProvider(create: (context) => UnavailableProvider()),
         ChangeNotifierProvider(create: (context) => HiddenProvider()),
         ChangeNotifierProvider(create: (context) => RecommendedProvider()),
+        ChangeNotifierProvider(create: (context) => DetailProductProvider()),
+        ChangeNotifierProvider(create: (context) => DetailListProvider()),
+        ChangeNotifierProvider(create: (context) => ChooseCategoriesProvider()),
+        ChangeNotifierProvider(create: (context) => QrScanProvider()),
+        ChangeNotifierProvider(create: (context) => ChooseProductProvider()),
+        ChangeNotifierProvider(create: (context) => AddPromoProvider()),
+        ChangeNotifierProvider(create: (context) => EditPromoProvider()),
+        ChangeNotifierProvider(create: (context) => DetailPromoProvider()),
+        ChangeNotifierProvider(create: (context) => PromoProvider()),
+        ChangeNotifierProvider(create: (context) => PromoActiveProvider()),
+        ChangeNotifierProvider(create: (context) => PromoSoonProvider()),
+        ChangeNotifierProvider(create: (context) => PromoExpiredProvider()),
+        ChangeNotifierProvider(create: (context) => OrderCancelCustomerProvider()),
+        ChangeNotifierProvider(create: (context) => OrderCancelMerchantProvider()),
+        ChangeNotifierProvider(create: (context) => OrderConfirmedProvider()),
+        ChangeNotifierProvider(create: (context) => OrderExpiredProvider()),
+        ChangeNotifierProvider(create: (context) => OrderFinishedProvider()),
+        ChangeNotifierProvider(create: (context) => OrderInTakingProvider()),
+        ChangeNotifierProvider(create: (context) => OrderRequestProvider()),
+        ChangeNotifierProvider(create: (context) => OrderSubmittedProvider()),
+        ChangeNotifierProvider(create: (context) => OrderDetailProvider()),
+        ChangeNotifierProvider(create: (context) => OrderCancelProvider()),
       ],
       child: GetMaterialApp(
         title: 'PasarAja',
+        debugShowCheckedModeBanner: false,
         theme: ThemeData(
           useMaterial3: true,
           colorScheme: ColorScheme.fromSeed(
@@ -76,8 +107,25 @@ class MyApp extends StatelessWidget {
             backgroundColor: Colors.white,
             surfaceTintColor: Colors.white,
           ),
+          datePickerTheme: const DatePickerThemeData(
+            backgroundColor: Colors.white,
+            surfaceTintColor: Colors.white,
+            headerBackgroundColor: Colors.white,
+            confirmButtonStyle: ButtonStyle(
+              backgroundColor: MaterialStatePropertyAll(PasarAjaColor.green2),
+              foregroundColor: MaterialStatePropertyAll(PasarAjaColor.white),
+            ),
+            cancelButtonStyle: ButtonStyle(
+              backgroundColor: MaterialStatePropertyAll(PasarAjaColor.red2),
+              foregroundColor: MaterialStatePropertyAll(PasarAjaColor.white),
+            ),
+          ),
+          bottomSheetTheme: const BottomSheetThemeData(
+            backgroundColor: Colors.white,
+            surfaceTintColor: Colors.white,
+          ),
         ),
-        debugShowCheckedModeBanner: false,
+        // home: const listview_kategori(),
         home: const SplashScreen(),
       ),
     );

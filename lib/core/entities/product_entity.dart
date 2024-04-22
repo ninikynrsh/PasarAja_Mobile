@@ -5,6 +5,7 @@ class ProductEntity extends Equatable {
   final int? id;
   final int? idShop;
   final int? idCpProd;
+  final String? categoryName;
   final String? productName;
   final String? description;
   final int? totalSold;
@@ -13,6 +14,8 @@ class ProductEntity extends Equatable {
   final int? sellingUnit;
   final int? price;
   final String? photo;
+  final num? rating;
+  final int? totalReview;
   final DateTime? createdAt;
   final DateTime? updatedAt;
 
@@ -20,6 +23,7 @@ class ProductEntity extends Equatable {
     this.id,
     this.idShop,
     this.idCpProd,
+    this.categoryName,
     this.productName,
     this.description,
     this.totalSold,
@@ -28,6 +32,8 @@ class ProductEntity extends Equatable {
     this.sellingUnit,
     this.price,
     this.photo,
+    this.rating,
+    this.totalReview,
     this.createdAt,
     this.updatedAt,
   });
@@ -38,6 +44,7 @@ class ProductEntity extends Equatable {
       id,
       idShop,
       idCpProd,
+      categoryName,
       productName,
       description,
       totalSold,
@@ -46,6 +53,8 @@ class ProductEntity extends Equatable {
       sellingUnit,
       price,
       photo,
+      rating,
+      totalReview,
       createdAt,
       updatedAt,
     ];

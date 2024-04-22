@@ -50,6 +50,24 @@ class PasarAjaMessage {
   }
 
   ///
+  static Future<bool> showWarning(
+    String message, {
+    bool barrierDismissible = false,
+    bool triggerVibration = false,
+    String? actionYes,
+  }) async {
+    return await _createPop(
+      InformationDialog(
+        title: "Peringatan",
+        message: message,
+        actionYes: actionYes,
+      ),
+      barrierDismissible: barrierDismissible,
+      triggerVibration: triggerVibration,
+    );
+  }
+
+  ///
   static Future<bool> showConfirmation(
     String message, {
     bool barrierDismissible = false,
@@ -87,17 +105,20 @@ class PasarAjaMessage {
   }
 
   ///
-  static showLoading({bool canPop = false}) {
+  static showLoading({
+    bool canPop = false,
+    Color loadingColor = PasarAjaColor.green2,
+  }) {
     Get.dialog(
       PopScope(
         canPop: canPop,
-        child: const Center(
+        child: Center(
           child: CircularProgressIndicator(
-            color: PasarAjaColor.green2,
+            color: loadingColor,
           ),
         ),
       ),
-      barrierDismissible: false,
+      barrierDismissible: true,
       transitionCurve: Curves.easeOut,
     );
   }
