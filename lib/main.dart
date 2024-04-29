@@ -9,6 +9,7 @@ import 'package:pasaraja_mobile/module/auth/providers/providers.dart';
 import 'package:pasaraja_mobile/module/customer/provider/providers.dart';
 import 'package:pasaraja_mobile/module/merchant/providers/providers.dart';
 import 'package:pasaraja_mobile/splash_screen.dart';
+import 'package:pasaraja_mobile/syam.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
@@ -52,6 +53,16 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => ProfileCustomerProvider()),
         ChangeNotifierProvider(create: (context) => EditAccountCustomerProvider()),
         ChangeNotifierProvider(create: (context) => UpdatePhotoProfileCustomerProvider()),
+        ChangeNotifierProvider(create: (context) => CustomerOrderCancelCustomerProvider()),
+        ChangeNotifierProvider(create: (context) => CustomerOrderCancelMerchantProvider()),
+        ChangeNotifierProvider(create: (context) => CustomerOrderConfirmedProvider()),
+        ChangeNotifierProvider(create: (context) => CustomerOrderExpiredProvider()),
+        ChangeNotifierProvider(create: (context) => CustomerOrderFinishedProvider()),
+        ChangeNotifierProvider(create: (context) => CustomerOrderInTakingProvider()),
+        ChangeNotifierProvider(create: (context) => CustomerOrderRequestProvider()),
+        ChangeNotifierProvider(create: (context) => CustomerOrderSubmittedProvider()),
+        ChangeNotifierProvider(create: (context) => CustomerOrderDetailProvider()),
+        ChangeNotifierProvider(create: (context) => CustomerOrderCancelProvider()),
         // merchant
         ChangeNotifierProvider(create: (context) => MyShopProvider()),
         ChangeNotifierProvider(create: (context) => ProfileProvider()),
