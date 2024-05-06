@@ -6,6 +6,7 @@ import 'package:pasaraja_mobile/config/themes/colors.dart';
 import 'package:pasaraja_mobile/firebase_options.dart';
 import 'package:pasaraja_mobile/core/services/google_signin_services.dart';
 import 'package:pasaraja_mobile/module/auth/providers/providers.dart';
+import 'package:pasaraja_mobile/module/customer/provider/cart/cart_provider.dart';
 import 'package:pasaraja_mobile/module/customer/provider/providers.dart';
 import 'package:pasaraja_mobile/module/merchant/providers/providers.dart';
 import 'package:pasaraja_mobile/splash_screen.dart';
@@ -63,6 +64,12 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => CustomerOrderSubmittedProvider()),
         ChangeNotifierProvider(create: (context) => CustomerOrderDetailProvider()),
         ChangeNotifierProvider(create: (context) => CustomerOrderCancelProvider()),
+        ChangeNotifierProvider(create: (context) => CustomerOrderNewProvider()),
+        ChangeNotifierProvider(create: (context) => CustomerShoppingProvider()),
+        ChangeNotifierProvider(create: (context) => CustomerShopProvider()),
+        ChangeNotifierProvider(create: (context) => CustomerProductProvider()),
+        ChangeNotifierProvider(create: (context) => CustomerProductDetailProvider()),
+        ChangeNotifierProvider(create: (context) => CartProvider()),
         // merchant
         ChangeNotifierProvider(create: (context) => MyShopProvider()),
         ChangeNotifierProvider(create: (context) => ProfileProvider()),

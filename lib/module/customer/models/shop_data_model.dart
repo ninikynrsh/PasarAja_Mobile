@@ -2,6 +2,10 @@ import 'package:pasaraja_mobile/core/entities/shop_entity.dart';
 import 'package:pasaraja_mobile/module/merchant/models/operational_model.dart';
 
 class ShopDataModel extends ShopEntity {
+  final String? ownerName;
+  final int? totalProduct;
+  final int? totalSold;
+
   const ShopDataModel({
     final int? idShop,
     final int? idUser,
@@ -13,6 +17,9 @@ class ShopDataModel extends ShopEntity {
     final String? photo,
     final DateTime? createdAt,
     final DateTime? updatedAt,
+    this.ownerName,
+    this.totalProduct,
+    this.totalSold,
   }) : super(
           idShop: idShop,
           idUser: idUser,
@@ -40,6 +47,13 @@ class ShopDataModel extends ShopEntity {
       updatedAt: json["updated_at"] == null
           ? null
           : DateTime.parse(json["updated_at"]),
+      ownerName: json['owner_name'] ?? '',
+      totalSold: json['total_sold'] ?? 0,
+      totalProduct: json['total_product'] ?? 0,
     );
+  }
+
+  static List<ShopDataModel> toList(List<dynamic> json){
+    return json.map((e) => ShopDataModel.fromJson(e)).toList();
   }
 }

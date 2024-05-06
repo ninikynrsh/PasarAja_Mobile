@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:pasaraja_mobile/core/entities/product_entity.dart';
 import 'package:pasaraja_mobile/module/customer/models/product_settings_model.dart';
+import 'package:pasaraja_mobile/module/customer/models/promo_model.dart';
 
 class ProductModel extends ProductEntity {
   const ProductModel({
@@ -13,6 +14,7 @@ class ProductModel extends ProductEntity {
     final String? description,
     final int? totalSold,
     final ProductSettingsModel? settings,
+    final PromoModel? promo,
     final String? unit,
     final int? sellingUnit,
     final int? price,
@@ -34,6 +36,7 @@ class ProductModel extends ProductEntity {
           totalSold: totalSold,
           totalReview: totalReview,
           rating: rating,
+          promo: promo,
         );
 
   factory ProductModel.fromJson(Map<String, dynamic> map) {
@@ -54,6 +57,9 @@ class ProductModel extends ProductEntity {
       photo: map['photo'] ?? '',
       rating: map['rating'] ?? 0.0,
       totalReview: map['total_review'] ?? 0,
+      promo: map['promo'] != null
+          ? PromoModel.fromJson(map['promo'])
+          : const PromoModel(),
     );
   }
 
@@ -62,5 +68,29 @@ class ProductModel extends ProductEntity {
         .map<ProductModel>(
             (dynamic i) => ProductModel.fromJson(i as Map<String, dynamic>))
         .toList();
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id_product': id,
+      'id_shop': idShop,
+      'id_cp_prod': idCpProd,
+      'category_name': categoryName,
+      'product_name': productName,
+      'description': description,
+      'total_sold': totalSold,
+      'unit': unit,
+      'selling_unit': sellingUnit,
+      'price': price,
+      'photo': photo,
+      'rating': rating,
+      'total_review': totalReview,
+      'promo' : {
+        "promo_price": promo?.promoPrice ?? 0,
+        "percentage": promo?.percentage ?? 0,
+        "start_date": promo?.startDate?.toIso8601String(),
+        "end_date": promo?.endDate?.toIso8601String(),
+      },
+    };
   }
 }
