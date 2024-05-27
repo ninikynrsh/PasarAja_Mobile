@@ -1,5 +1,7 @@
+import 'package:d_method/d_method.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_session_jwt/flutter_session_jwt.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:pasaraja_mobile/core/constants/constants.dart';
@@ -113,16 +115,19 @@ class SignInGoogleProvider extends ChangeNotifier {
       await PasarAjaConstant.buttonDelay;
 
       // get device info
+      DMethod.log('get device token');
       String? deviceToken = await FirebaseMessaging.instance.getToken();
       String deviceName = await PasarAjaUtils.getDeviceModel();
 
       // save device token
+      DMethod.log('save device token');
       PasarAjaUserService.setUserData(
         PasarAjaUserService.deviceToken,
         deviceToken,
       );
 
       // memanggil controller untuk melakukan login dengan email dan password
+      DMethod.log('call controller');
       final dataState = await _signInController.signInEmail(
         email: email,
         password: password,
@@ -136,16 +141,21 @@ class SignInGoogleProvider extends ChangeNotifier {
         buttonState = AuthFilledButton.stateEnabledButton;
         Fluttertoast.showToast(msg: "Login Berhasil");
 
+        DMethod.log('on success');
+        DMethod.log('get user data');
         // mendapatkan data user
         UserModel userData = dataState.data as UserModel;
         // menyimpan session login
+        DMethod.log('save session');
         await PasarAjaUserService.login(userData);
 
         // get user level
+        DMethod.log('get role');
         String level = userData.level!.toLowerCase();
 
         // jika user login sebagai penjual
         if (level == UserLevel.penjual.name) {
+          DMethod.log('role is merchant');
           // membuka halaman utama
           Get.to(
             const MerchantMainPage(),
@@ -153,11 +163,13 @@ class SignInGoogleProvider extends ChangeNotifier {
         }
         // jika user login sebagai pembeli
         else if (level == UserLevel.pembeli.name) {
+          DMethod.log('role is customers');
           // membuka halaman utama
           Get.to(
             const CustomerMainPage(),
           );
         } else {
+          DMethod.log('get device token');
           Get.snackbar("ERROR", "Your account level is unknown");
         }
       }
@@ -165,9 +177,7 @@ class SignInGoogleProvider extends ChangeNotifier {
       // jika login gagal
       if (dataState is DataFailed) {
         PasarAjaUtils.triggerVibration();
-        message = dataState.error!.error ?? PasarAjaConstant.unknownError;
-        // Fluttertoast.showToast(msg: message.toString());
-        PasarAjaMessage.showSnackbarWarning(message.toString());
+        PasarAjaMessage.showSnackbarWarning(dataState.error?.error.toString() ?? PasarAjaConstant.unknownError);
       }
 
       // close loading button

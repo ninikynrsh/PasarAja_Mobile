@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:d_method/d_method.dart';
@@ -10,10 +11,13 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 import 'package:pasaraja_mobile/core/entities/choose_photo.dart';
 import 'package:pasaraja_mobile/core/entities/promo_entity.dart';
+import 'package:pasaraja_mobile/core/utils/messages.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:talker_dio_logger/talker_dio_logger.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:vibration/vibration.dart';
 import 'package:image/image.dart' as img;
 
@@ -221,7 +225,7 @@ class PasarAjaUtils {
       if (promo.startDate != null && promo.endDate != null) {
         // Get the current date
         DateTime now = DateTime.now();
-        DMethod.log('PROMO PRICE : ${promo.promoPrice}');
+        // DMethod.log('PROMO PRICE : ${promo.promoPrice}');
 
         // Check if the current date is within the promo period
         if (now.isAfter(promo.startDate!) && now.isBefore(promo.endDate!)) {
@@ -232,5 +236,54 @@ class PasarAjaUtils {
     }
     // Promo is not active or promo data is null
     return false;
+  }
+
+  static bool isSoonAndActivePromo(PromoEntity? promo) {
+    if (promo != null) {
+      // Check if promo has start and end dates
+      if (promo.startDate != null && promo.endDate != null) {
+        // Get the current date
+        DateTime now = DateTime.now();
+        // DMethod.log('PROMO PRICE : ${promo.promoPrice}');
+
+        // Check if the current date is within the promo period
+        if (now.isBefore(promo.endDate!.add(const Duration(days: 1)))) {
+          // Promo is active
+          return true;
+        }
+      }
+    }
+    // Promo is not active or promo data is null
+    return false;
+  }
+
+  static String formatDateString(String dateString) {
+    // Parse tanggal dari string ke dalam objek DateTime
+    DateTime parsedDate = DateTime.parse(dateString);
+
+    // Format tanggal sesuai dengan format yang diinginkan (dd MMMM yyyy)
+    String formattedDate = DateFormat('dd MMMM yyyy', 'id_ID').format(parsedDate);
+
+    return formattedDate;
+  }
+
+  static List<T> shuffleList<T>(List<T> inputList) {
+    List<T> resultList = List.from(inputList);
+    Random random = Random();
+
+    for (int i = resultList.length - 1; i > 0; i--) {
+      int j = random.nextInt(i + 1);
+      T temp = resultList[i];
+      resultList[i] = resultList[j];
+      resultList[j] = temp;
+    }
+
+    return resultList;
+  }
+
+  static Future<void> launchURL(final String url) async {
+    if (!await launchUrl(Uri.parse(url))) {
+      PasarAjaMessage.showSnackbarError('Gagal Membuka Link Update');
+    }
   }
 }
